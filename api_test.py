@@ -26,6 +26,14 @@ while True:
             timeToStation = responseItem['timeToStation']
             timestamp, ts = timeConverter(timestamp,timeToStation)
             store[responseItem['id']] = [responseItem['lineId'], timestamp, ts,'to']
+    for i in range(len(responseFrom)):
+        responseItem = responseFrom[i]
+        if responseItem['timeToStation'] < 200:
+            print(responseItem['lineId'], ":  ",responseItem['timeToStation'])
+            timestamp = responseItem['timestamp']
+            timeToStation = responseItem['timeToStation']
+            timestamp, ts = timeConverter(timestamp,timeToStation)
+            store[responseItem['id']] = [responseItem['lineId'], timestamp, ts,'from']
     print(store)
     time.sleep(60)
     
