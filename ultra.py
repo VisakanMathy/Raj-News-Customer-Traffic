@@ -114,7 +114,7 @@ try:
 				print(store[i])
 				with open('buses.csv','a',newline='') as buses_file:
 					buses_writer = csv.writer(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-					buses_writer.writerow([i,store[i]])
+					buses_writer.writerow([i,store[i][0],store[i][1],store[i][2],store[i][3]])
 				todelete.append(i)
 		for i in todelete:
 			del(store[i])
