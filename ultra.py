@@ -32,22 +32,17 @@ def timeConverter(timestamp,timeToStation):
         timestamp = timestamp[0:25]+timestamp[27]
     a = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ") + datetime.timedelta(seconds = timeToStation)
     return time.ctime(int(unix_time(a))), unix_time(a)
-def weatherRequest():
-	response = requests.get("http://api.openweathermap.org/data/2.5/weather?lat=51.474520&lon=-0.13234&APPID=6be8e1e50dafc734a74f13e0360e68df")
-	text = json.dumps(response.json(), sort_keys=True, indent=4)
-	print(text)
-	return text
 def weatherRequest(response, tic):
 	if time.time()-tic > 300 or response == {}:
-    	response = requests.get("http://api.openweathermap.org/data/2.5/weather?lat=51.474520&lon=-0.13234&APPID=6be8e1e50dafc734a74f13e0360e68df")
+		response = requests.get("http://api.openweathermap.org/data/2.5/weather?lat=51.474520&lon=-0.13234&APPID=6be8e1e50dafc734a74f13e0360e68df")
 		tic = time.time()
-    main = response.json()['weather'][0]['main']
-    description = response.json()['weather'][0]['description']
-    feels_like = response.json()['main']['feels_like']
-    temp = response.json()['main']['temp']
-    clouds = response.json()['clouds']['all']
-    wind_speed = response.json()['wind']['speed']
-    return response, main, description, feels_like, temp, clouds,wind_speed, tic
+	main = response.json()['weather'][0]['main']
+	description = response.json()['weather'][0]['description']
+	feels_like = response.json()['main']['feels_like']
+	temp = response.json()['main']['temp']
+	clouds = response.json()['clouds']['all']
+	wind_speed = response.json()['wind']['speed']
+	return response, main, description, feels_like, temp, clouds,wind_speed, tic
 def pulse(delay):
 	gpio.output(trig,True)
 	time.sleep(0.00001)
