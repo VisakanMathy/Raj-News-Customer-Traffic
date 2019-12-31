@@ -44,7 +44,7 @@ while True:
     time.sleep(60)
     todelete = []
     for i in store.keys():
-        if time.time() - store[i][2] > 10:
+        if store[i][2] - time.time()  > 10:
             print(store[i])
             todelete.append(i)
     for i in todelete:
