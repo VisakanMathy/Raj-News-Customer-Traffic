@@ -37,7 +37,8 @@ def trafficRequest(store):
             timestamp, ts = timeConverter(timestamp,timeToStation)
             store[responseItem['id']] = [responseItem['lineId'], timestamp, ts,'from']
     for i in store.keys():
-        print(store[i][2])
+        if time.time() - store[i][2] > 300:
+            del store[i]
     return store
 while True:
     store = trafficRequest(store)
