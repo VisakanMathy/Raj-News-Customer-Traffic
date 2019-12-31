@@ -129,9 +129,10 @@ try:
 						if store[i][2] > mostrecent:
 							mostrecent = store[i][2]
 					recentbuses.append(i)
-			with open('data.csv','a',newline='') as data_file:
-					data_writer = csv.writer(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-					data_writer.writerow([timestamp, sectionCounter, main, description, feels_like, temp, clouds,wind_speed, recentbuses, mostrecent])
+			if sectionCounter > 1:
+				with open('data.csv','a',newline='') as data_file:
+						data_writer = csv.writer(data_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+						data_writer.writerow([timestamp, sectionCounter, main, description, feels_like, temp, clouds,wind_speed, recentbuses, mostrecent])
 #			store(counter,response)
 #		print(counter)
 finally:
