@@ -120,7 +120,11 @@ try:
 						print(sectionCounter)
 				elif current > 50 and current < 100:
 					gate = False
-			print(timestamp, main, description, feels_like, temp, clouds,wind_speed, store.keys())
+			recentbuses = []
+			for i in store.keys():
+				if time.time()-store[i][2] > 0:
+					recentbuses.append(i)
+			print(timestamp, main, description, feels_like, temp, clouds,wind_speed, recentbuses)
 		
 #			store(counter,response)
 #		print(counter)
