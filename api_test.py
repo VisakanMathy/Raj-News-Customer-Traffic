@@ -2,6 +2,7 @@
 import requests
 import time
 import datetime
+
 def unix_time(dt):
     epoch = datetime.datetime.utcfromtimestamp(0)
     delta = dt - epoch
@@ -14,16 +15,17 @@ def timeConverter(timestamp,timeToStation):
 lastresponse = {}
 store = {}
 while True:
-    response = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N2/Arrivals")
+    responseTo = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N2/Arrivals").json()
+    responseFrom = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N1/Arrivals").json()
     #print(json.dumps(response.json()[0], sort_keys=True, indent=4))
-    for i in range(len(response.json())):
-        if response.json()[i]['timeToStation'] < 200:
-            print(response.json()[i]['lineId'], ":  ",response.json()[i]['timeToStation'])
-            timestamp = response.json()[i]['timestamp']
-            timeToStation = response.json()[i]['timeToStation']
+    for i in range(len(responseTo)):
+        responseItem = responseTo[i]
+        if responseItem['timeToStation'] < 200:
+            print(responseItem['lineId'], ":  ",responseItem['timeToStation'])
+            timestamp = responseItem['timestamp']
+            timeToStation = responseItem['timeToStation']
             timestamp, ts = timeConverter(timestamp,timeToStation)
-            store[response.json()[i]['id']] = [response.json()[i]['lineId'], timestamp, ts]
+            store[responseItem['id']] = [responseItem['lineId'], timestamp, ts,'to']
     print(store)
-    lastresponse = response
-    time.sleep(40)
+    time.sleep(60)
     
