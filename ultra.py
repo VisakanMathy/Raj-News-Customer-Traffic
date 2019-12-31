@@ -110,7 +110,7 @@ try:
 			traffic_poll = time.time()
 		todelete = []
 		for i in store.keys():
-			if store[i][2] - time.time() > 120:
+			if time.time() - store[i][2]  > 120:
 				print(store[i])
 				with open('buses.csv','a',newline='') as buses_file:
 					buses_writer = csv.writer(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
