@@ -14,6 +14,7 @@ store = {}
 counter = 0
 traffic_poll = 0
 buses_file = None
+data_file = None
 
 print("Distance Measurement in Progress")
 
@@ -138,5 +139,7 @@ try:
 finally:
 	if buses_file != None:
 		buses_file.close()
+	if data_file != None:
+		data_file.close()
 	gpio.cleanup()
 	print(counter)
