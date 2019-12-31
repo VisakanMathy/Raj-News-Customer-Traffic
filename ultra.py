@@ -88,53 +88,55 @@ try:
 	tic = 0
 	response = {}
 	while True:
-		if time.time() - traffic_poll > 40:
-			store = trafficRequest(store)
-			traffic_poll = time.time()
-		todelete = []
-		for i in store.keys():
-			if time.time() - store[i][2]  > 120:
-				print(store[i])
-				with open('buses.csv','a',newline='') as buses_file:
-					buses_writer = csv.writer(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-					buses_writer.writerow([i,store[i][0],store[i][1],store[i][2],store[i][3]])
-				todelete.append(i)
-		for i in todelete:
-			del(store[i])
-		current = pulse(0.1)
-		if current < 40 or current > 2000:
-			timestampI = time.time()
-			timestamp = time.ctime(int(timestampI))
-			response, main, description, feels_like, temp, clouds,wind_speed, tic = weatherRequest(response,tic)
-			now = time.time()
-			sectionCounter = 0
-			while time.time() - now < 5:
-				current = pulse(0.1)
-				if current < 40 or current > 2000:
-					now = time.time()
-					if gate == False:
-						counter += 1
-						sectionCounter += 1
-						gate = True
-						print(sectionCounter)
-				elif current > 50 and current < 100:
-					gate = False
-			recentbuses = []
-			mostrecent = None
+		time.sleep(20)
+		while datetime.datetime.today().hour < 23 and datetime.datetime.today().hour > 6:
+			if time.time() - traffic_poll > 40:
+				store = trafficRequest(store)
+				traffic_poll = time.time()
+			todelete = []
 			for i in store.keys():
-				if time.time()-store[i][2] > 0:
-					if mostrecent == None:
-						mostrecent = store[i][2]
-					else:
-						if store[i][2] > mostrecent:
+				if time.time() - store[i][2]  > 120:
+					print(store[i])
+					with open('buses.csv','a',newline='') as buses_file:
+						buses_writer = csv.writer(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+						buses_writer.writerow([i,store[i][0],store[i][1],store[i][2],store[i][3]])
+					todelete.append(i)
+			for i in todelete:
+				del(store[i])
+			current = pulse(0.1)
+			if current < 40 or current > 2000:
+				timestampI = time.time()
+				timestamp = time.ctime(int(timestampI))
+				response, main, description, feels_like, temp, clouds,wind_speed, tic = weatherRequest(response,tic)
+				now = time.time()
+				sectionCounter = 0
+				while time.time() - now < 5:
+					current = pulse(0.1)
+					if current < 40 or current > 2000:
+						now = time.time()
+						if gate == False:
+							counter += 1
+							sectionCounter += 1
+							gate = True
+							print(sectionCounter)
+					elif current > 50 and current < 100:
+						gate = False
+				recentbuses = []
+				mostrecent = None
+				for i in store.keys():
+					if time.time()-store[i][2] > 0:
+						if mostrecent == None:
 							mostrecent = store[i][2]
-					recentbuses.append(i)
-			if sectionCounter > 1:
-				with open('data.csv','a',newline='') as data_file:
-						data_writer = csv.writer(data_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-						data_writer.writerow([timestamp, sectionCounter, main, description, feels_like, temp, clouds,wind_speed, recentbuses, mostrecent])
-#			store(counter,response)
-#		print(counter)
+						else:
+							if store[i][2] > mostrecent:
+								mostrecent = store[i][2]
+						recentbuses.append(i)
+				if sectionCounter > 1:
+					with open('data.csv','a',newline='') as data_file:
+							data_writer = csv.writer(data_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+							data_writer.writerow([timestamp, sectionCounter, main, description, feels_like, temp, clouds,wind_speed, recentbuses, mostrecent])
+	#			store(counter,response)
+	#		print(counter)
 finally:
 	if buses_file != None:
 		buses_file.close()
