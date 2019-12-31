@@ -8,14 +8,13 @@ def unix_time(dt):
     delta = dt - epoch
     return delta.total_seconds()
 def timeConverter(timestamp,timeToStation):
-    if len(timestamp) == 28:
+    if len(timestamp) == 28:    
         timestamp = timestamp[0:25]+timestamp[27]
     a = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ") + datetime.timedelta(seconds = timeToStation)
     return time.ctime(int(unix_time(a))), unix_time(a)
 
-lastresponse = {}
 store = {}
-while True:
+def trafficRequest(store):
     responseTo = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N2/Arrivals").json()
     responseFrom = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N1/Arrivals").json()
     #print(json.dumps(response.json()[0], sort_keys=True, indent=4))
@@ -37,6 +36,10 @@ while True:
             timeToStation = responseItem['timeToStation']
             timestamp, ts = timeConverter(timestamp,timeToStation)
             store[responseItem['id']] = [responseItem['lineId'], timestamp, ts,'from']
-    print(store)
+    for i in store.keys():
+        print(store[i][2])
+    return store
+while True:
+    store = trafficRequest(store)
     time.sleep(60)
     
