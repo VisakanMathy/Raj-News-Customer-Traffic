@@ -108,7 +108,7 @@ try:
 			response, main, description, feels_like, temp, clouds,wind_speed, tic = weatherRequest(response,tic)
 			now = time.time()
 			sectionCounter = 0
-			while time.time() - now < 1:
+			while time.time() - now < 5:
 				current = pulse(0.1)
 				if current < 40 or current > 2000:
 					now = time.time()
