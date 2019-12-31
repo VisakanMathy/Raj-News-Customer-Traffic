@@ -8,7 +8,8 @@ def unix_time(dt):
     delta = dt - epoch
     return delta.total_seconds()
 def timeConverter(timestamp,timeToStation):
-    timestamp = timestamp[0:25]+timestamp[27]
+    if len(timestamp) == 28:
+        timestamp = timestamp[0:25]+timestamp[27]
     a = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ") + datetime.timedelta(seconds = timeToStation)
     return time.ctime(int(unix_time(a))), unix_time(a)
 
