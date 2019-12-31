@@ -14,6 +14,7 @@ def timeConverter(timestamp,timeToStation):
     return time.ctime(int(unix_time(a))), unix_time(a)
 
 store = {}
+
 def trafficRequest(store):
     responseTo = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N2/Arrivals").json()
     responseFrom = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N1/Arrivals").json()
@@ -36,12 +37,16 @@ def trafficRequest(store):
             timeToStation = responseItem['timeToStation']
             timestamp, ts = timeConverter(timestamp,timeToStation)
             store[responseItem['id']] = [responseItem['lineId'], timestamp, ts,'from']
-    for i in store.keys():
-        if time.time() - store[i][2] > 300:
-            print(store[i])
-            del store[i]
+
     return store
 while True:
     store = trafficRequest(store)
     time.sleep(60)
+    todelete = []
+    for i in store.keys():
+        if time.time() - store[i][2] > 10:
+            print(store[i])
+            todelete.append(store[i])
+    for i in todelete:
+        del(store[i])
     
