@@ -13,6 +13,7 @@ maxsize = 5
 store = {}
 counter = 0
 traffic_poll = 0
+buses_file = None
 
 print("Distance Measurement in Progress")
 
@@ -88,6 +89,19 @@ try:
 	tic = 0
 	response = {}
 	while True:
+		if time.time() - traffic_poll > 40:
+			store = trafficRequest(store)
+			traffic_poll = time.time()
+		todelete = []
+		for i in store.keys():
+			if time.time() - store[i][2]  > 120:
+				print(store[i])
+				with open('buses.csv','a',newline='') as buses_file:
+					buses_writer = csv.writer(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+					buses_writer.writerow([i,store[i][0],store[i][1],store[i][2],store[i][3]])
+				todelete.append(i)
+		for i in todelete:
+			del(store[i])
 		current = pulse(0.1)
 		if current < 40 or current > 2000:
 			timestampI = time.time()
@@ -106,24 +120,12 @@ try:
 						print(sectionCounter)
 				elif current > 50 and current < 100:
 					gate = False
-			print(current, main, description, feels_like, temp, clouds,wind_speed)
-		if time.time() - traffic_poll > 40:
-			store = trafficRequest(store)
-			traffic_poll = time.time()
-		todelete = []
-		for i in store.keys():
-			if time.time() - store[i][2]  > 120:
-				print(store[i])
-				with open('buses.csv','a',newline='') as buses_file:
-					buses_writer = csv.writer(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-					buses_writer.writerow([i,store[i][0],store[i][1],store[i][2],store[i][3]])
-				todelete.append(i)
-		for i in todelete:
-			del(store[i])
+			print(timestamp, main, description, feels_like, temp, clouds,wind_speed, store.keys())
+		
 #			store(counter,response)
 #		print(counter)
 finally:
-	if buses_file:
+	if buses_file != None:
 		buses_file.close()
 	gpio.cleanup()
 	print(counter)
