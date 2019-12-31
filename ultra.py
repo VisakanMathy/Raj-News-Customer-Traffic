@@ -107,6 +107,13 @@ try:
 		if time.time() - traffic_poll > 40:
 			store = trafficRequest(store)
 			traffic_poll = time.time()
+		todelete = []
+		for i in store.keys():
+			if time.time() - store[i][2] > 10:
+				print(store[i])
+				todelete.append(i)
+		for i in todelete:
+			del(store[i])
 #			store(counter,response)
 #		print(counter)
 finally:
