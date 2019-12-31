@@ -63,7 +63,6 @@ def pulse(delay):
 def trafficRequest(store):
     responseTo = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N2/Arrivals").json()
     responseFrom = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N1/Arrivals").json()
-    #print(json.dumps(response.json()[0], sort_keys=True, indent=4))
     for i in range(len(responseTo)):
         responseItem = responseTo[i]
         if responseItem['timeToStation'] < 200:
@@ -121,11 +120,18 @@ try:
 				elif current > 50 and current < 100:
 					gate = False
 			recentbuses = []
+			mostrecent = None
 			for i in store.keys():
 				if time.time()-store[i][2] > 0:
+					if mostrecent == None:
+						mostrecent = store[i][2]
+					else:
+						if store[i][2] > mostrecent:
+							mostrecent = store[i][2]
 					recentbuses.append(i)
-			print(timestamp, main, description, feels_like, temp, clouds,wind_speed, recentbuses)
-		
+			with open('data.csv','a',newline='') as data_file:
+					data_writer = csv.writer(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+					data_writer.writerow([timestamp, sectionCounter, main, description, feels_like, temp, clouds,wind_speed, recentbuses, mostrecent])
 #			store(counter,response)
 #		print(counter)
 finally:
