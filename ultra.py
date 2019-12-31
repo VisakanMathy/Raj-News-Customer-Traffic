@@ -113,7 +113,7 @@ try:
 			if time.time() - store[i][2] > 10:
 				print(store[i])
 				with open('buses.csv','a',newline='') as buses_file:
-					buses_writer = csv.write(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+					buses_writer = csv.writer(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 					buses_writer.writerow([i,store[i]])
 				todelete.append(i)
 		for i in todelete:
