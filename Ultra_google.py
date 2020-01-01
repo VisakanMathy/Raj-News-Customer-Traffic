@@ -151,7 +151,7 @@ try:
                         if mostrecent == None:
                             mostrecent = i
                         else:
-                            if store[i][2] > mostrecent:
+                            if store[i][2] > store[mostrecent][2]:
                                 mostrecent = i
                         recentbuses.append(i)
                 current_data = [timestamp, sectionCounter, main, description, feels_like, temp, clouds,wind_speed,recentbuses,mostrecent]
