@@ -26,17 +26,17 @@ gpio.setup(echo,gpio.IN)
 gpio.output(trig,False)
 print("Waiting for Sensor to Settle")
 time.sleep(2)
-def initGoogleSheet(sheetname):
+def initGoogleSheet(sheetname,sheet):
     scope = ['https://spreadsheets.google.com/feeds',
              'https://www.googleapis.com/auth/drive']
     credentials = ServiceAccountCredentials.from_json_keyfile_name('SIOT-bbab5a9d0c4f.json', scope)
     gc = gspread.authorize(credentials)
-    wks = gc.open(sheetname).sheet1
+    wks = gc.open(sheetname).get_worksheet(sheet)
     entries = len(wks.col_values(1)) + 1
+    if entries > 1000:
+        entries, wks = initGoogleSheet(sheetname,sheet + 1)
     return entries, wks
 def updateSheet(entries,worksheet,data):
-    print(data)
-    print(entries)
     for i in range(len(data)):
         if isinstance(data[i],list):
             worksheet.update_cell(entries,i+1, ' '.join(data[i]))
@@ -103,8 +103,8 @@ def trafficRequest(store):
             timestamp, ts = timeConverter(timestamp,timeToStation)
             store[responseItem['id']] = [responseItem['lineId'], timestamp, ts,'from']
     return store
-data_entries, data_gs = initGoogleSheet('SIOT_data')
-bus_entries, bus_gs = initGoogleSheet('Buses')
+data_entries, data_gs = initGoogleSheet('SIOT_data',0)
+bus_entries, bus_gs = initGoogleSheet('Buses',0)
 try:
     gate = False
     tic = 0
@@ -119,6 +119,8 @@ try:
             for i in store.keys():
                 if time.time() - store[i][2]  > 120:
                     current_bus = [i,store[i][0],store[i][1],store[i][2],store[i][3]]
+                    if bus_entries > 1000:
+                        bus_entries, bus_gs = initGoogleSheet('Buses',0)
                     bus_entries = updateSheet(bus_entries,bus_gs,current_bus)
                     with open('buses.csv','a',newline='') as buses_file:
                         buses_writer = csv.writer(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -155,6 +157,8 @@ try:
                                 mostrecent = i
                         recentbuses.append(i)
                 current_data = [timestamp, sectionCounter, main, description, feels_like, temp, clouds,wind_speed,recentbuses,mostrecent]
+                if data_entries > 1000:
+                    data_entries, data_gs = initGoogleSheet('SIOT_data',0)                 
                 data_entries = updateSheet(data_entries,data_gs,current_data)
                 with open('data.csv','a',newline='') as data_file:
                     data_writer = csv.writer(data_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
