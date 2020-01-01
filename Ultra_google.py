@@ -38,7 +38,10 @@ def updateSheet(entries,worksheet,data):
     print(data)
     print(entries)
     for i in range(len(data)):
-        worksheet.update_cell(entries,i+1,data[i])
+        if isinstance(data[i],list):
+            worksheet.update_cell(entries,i+1, ' '.join(data[i]))
+        else:
+            worksheet.update_cell(entries,i+1,data[i])
     entries += 1
     return entries
 def unix_time(dt):
