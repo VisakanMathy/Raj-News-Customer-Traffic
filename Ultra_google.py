@@ -35,6 +35,8 @@ def initGoogleSheet(sheetname):
     entries = len(wks.col_values(1)) + 1
     return entries, wks
 def updateSheet(entries,worksheet,data):
+    print(data)
+    print(entries)
     for i in range(len(data)):
         worksheet.update_cell(entries,i+1,data[i])
     entries += 1
