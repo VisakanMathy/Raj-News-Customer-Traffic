@@ -59,6 +59,7 @@ def pulse(delay):
 	pulse_duration = pulse_end - pulse_start
 	distance = round(pulse_duration * 17150, 2)
 	time.sleep(delay)
+#	print(distance)
 	return distance
 
 def trafficRequest(store):
@@ -90,7 +91,7 @@ try:
 	response = {}
 	while True:
 		time.sleep(20)
-		while datetime.datetime.today().hour < 23 and datetime.datetime.today().hour > 6:
+		while datetime.datetime.today().hour < 23 and  datetime.datetime.today().hour > 6:
 			if time.time() - traffic_poll > 40:
 				store = trafficRequest(store)
 				traffic_poll = time.time()
