@@ -152,7 +152,7 @@ try:
                             mostrecent = i
                         else:
                             if store[i][2] > mostrecent:
-                                mostrecent = store[i][2]
+                                mostrecent = i
                         recentbuses.append(i)
                 current_data = [timestamp, sectionCounter, main, description, feels_like, temp, clouds,wind_speed,recentbuses,mostrecent]
                 data_entries = updateSheet(data_entries,data_gs,current_data)
