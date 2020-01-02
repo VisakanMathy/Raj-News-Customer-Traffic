@@ -37,11 +37,8 @@ def initGoogleSheet(sheetname,sheet):
         entries, wks = initGoogleSheet(sheetname,sheet + 1)
     return entries, wks
 def updateSheet(entries,worksheet,data):
-    for i in range(len(data)):
-        if isinstance(data[i],list):
-            worksheet.update_cell(entries,i+1, ' '.join(data[i]))
-        else:
-            worksheet.update_cell(entries,i+1,data[i])
+    print('updatingSheet')
+    worksheet.append_row(data)
     entries += 1
     return entries
 def unix_time(dt):
@@ -65,21 +62,25 @@ def weatherRequest(response, tic):
     wind_speed = response.json()['wind']['speed']
     return response, main, description, feels_like, temp, clouds,wind_speed, tic
 def pulse(delay):
-	gpio.output(trig,True)
-	time.sleep(0.00001)
-	gpio.output(trig,False)
+    pulse_start = 0
+    pulse_end = 0
+    gpio.output(trig,True)
+    time.sleep(0.00001)
+    gpio.output(trig,False)
+    
+    while gpio.input(echo) == 0:
+        pulse_start = time.time()
 
-	while gpio.input(echo) == 0:
-		pulse_start = time.time()
-
-	while gpio.input(echo) == 1:
-		pulse_end = time.time()
-
-	pulse_duration = pulse_end - pulse_start
-	distance = round(pulse_duration * 17150, 2)
-	time.sleep(delay)
-#	print(distance)
-	return distance
+    while gpio.input(echo) == 1:
+        pulse_end = time.time()
+    
+    if pulse_start == pulse_end:
+        time.sleep(60)
+        
+    pulse_duration = pulse_end - pulse_start
+    distance = round(pulse_duration * 17150, 2)
+    time.sleep(delay)
+    return distance
 
 def trafficRequest(store):
     responseTo = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N2/Arrivals").json()
@@ -156,19 +157,17 @@ try:
                             if store[i][2] > store[mostrecent][2]:
                                 mostrecent = i
                         recentbuses.append(i)
-                current_data = [timestamp, sectionCounter, main, description, feels_like, temp, clouds,wind_speed,recentbuses,mostrecent]
+                current_data = [timestamp, sectionCounter, main, description, feels_like, temp, clouds,wind_speed, ' '.join(recentbuses) , mostrecent]
                 if data_entries > 1000:
                     data_entries, data_gs = initGoogleSheet('SIOT_data',0)                 
                 data_entries = updateSheet(data_entries,data_gs,current_data)
                 with open('data.csv','a',newline='') as data_file:
                     data_writer = csv.writer(data_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                     data_writer.writerow(current_data)
-	#			store(counter,response)
-	#		print(counter)
 finally:
-	if buses_file != None:
-		buses_file.close()
-	if data_file != None:
-		data_file.close()
-	gpio.cleanup()
-	print(counter)
+    if buses_file != None:
+        buses_file.close()
+    if data_file != None:
+        data_file.close()
+    gpio.cleanup()
+    print(counter)
