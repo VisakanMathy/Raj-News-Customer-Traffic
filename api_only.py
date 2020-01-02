@@ -68,8 +68,6 @@ def trafficRequest(store):
             timestamp, ts = timeConverter(timestamp,timeToStation)
             store[responseItem['id']] = [responseItem['lineId'], timestamp, ts,'from']
     return store
-bus_entries, bus_gs = initGoogleSheet('Buses2',0)
-weather_entries, weather_gs = initGoogleSheet('Weather',0)
 traffic_poll = 0
 weather_poll = 0
 store = {}
@@ -81,6 +79,7 @@ while True:
             weather_poll = time.time()
             response, main, description, feels_like, temp, clouds,wind_speed, repeat, dt = weatherRequest(response)
             if repeat == False:
+                weather_entries, weather_gs = initGoogleSheet('Weather',0)
                 if weather_entries > 1000:
                    weather_entries, weather_gs = initGoogleSheet('Weather',0)
                 weather_entries = updateSheet(weather_entries,weather_gs,[main, description, feels_like, temp, clouds,wind_speed,dt]) 
@@ -93,6 +92,7 @@ while True:
         for i in store.keys():
             if time.time() - store[i][2]  > 120:
                 current_bus = [i,store[i][0],store[i][1],store[i][2],store[i][3]]
+                bus_entries, bus_gs = initGoogleSheet('Buses2',0)
                 if bus_entries > 1000:
                     bus_entries, bus_gs = initGoogleSheet('Buses2',0)
                 bus_entries = updateSheet(bus_entries,bus_gs,current_bus)
