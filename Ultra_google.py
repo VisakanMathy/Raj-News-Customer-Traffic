@@ -35,10 +35,12 @@ def initGoogleSheet(sheetname,sheet):
     entries = len(wks.col_values(1)) + 1
     if entries > 1000:
         entries, wks = initGoogleSheet(sheetname,sheet + 1)
+    print('initiate sheet')
     return entries, wks
 def updateSheet(entries,worksheet,data):
     print('updatingSheet')
     worksheet.append_row(data)
+    print('updatedSheet')
     entries += 1
     return entries
 def unix_time(dt):
@@ -88,18 +90,14 @@ def trafficRequest(store):
     for i in range(len(responseTo)):
         responseItem = responseTo[i]
         if responseItem['timeToStation'] < 200:
-            print(responseItem['lineId'], ":  ",responseItem['timeToStation'])
             timestamp = responseItem['timestamp']
             timeToStation = responseItem['timeToStation']
-            print(timestamp)
             timestamp, ts = timeConverter(timestamp,timeToStation)
             store[responseItem['id']] = [responseItem['lineId'], timestamp, ts,'to']
     for i in range(len(responseFrom)):
         responseItem = responseFrom[i]
         if responseItem['timeToStation'] < 200:
-            print(responseItem['lineId'], ":  ",responseItem['timeToStation'])
             timestamp = responseItem['timestamp']
-            print(timestamp)
             timeToStation = responseItem['timeToStation']
             timestamp, ts = timeConverter(timestamp,timeToStation)
             store[responseItem['id']] = [responseItem['lineId'], timestamp, ts,'from']
@@ -112,6 +110,7 @@ try:
     response = {}
     while True:
         time.sleep(20)
+        print('sleeping')
         while datetime.datetime.today().hour < 23 and  datetime.datetime.today().hour > 5:
             if time.time() - traffic_poll > 40:
                 store = trafficRequest(store)
