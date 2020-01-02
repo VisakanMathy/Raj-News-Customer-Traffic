@@ -120,9 +120,9 @@ try:
             for i in store.keys():
                 if time.time() - store[i][2]  > 120:
                     current_bus = [i,store[i][0],store[i][1],store[i][2],store[i][3]]
+                    bus_entries, bus_gs = initGoogleSheet('Buses',0)
                     if bus_entries > 1000:
                         bus_entries, bus_gs = initGoogleSheet('Buses',0)
-                    bus_entries, bus_gs = initGoogleSheet('Buses',0)
                     bus_entries = updateSheet(bus_entries,bus_gs,current_bus)
                     with open('buses.csv','a',newline='') as buses_file:
                         buses_writer = csv.writer(buses_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
