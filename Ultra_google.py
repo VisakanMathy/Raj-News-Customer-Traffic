@@ -112,7 +112,7 @@ try:
     response = {}
     while True:
         time.sleep(20)
-        while datetime.datetime.today().hour < 23 and  datetime.datetime.today().hour > 6:
+        while datetime.datetime.today().hour < 23 and  datetime.datetime.today().hour > 5:
             if time.time() - traffic_poll > 40:
                 store = trafficRequest(store)
                 traffic_poll = time.time()
