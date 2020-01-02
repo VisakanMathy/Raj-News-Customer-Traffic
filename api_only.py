@@ -76,6 +76,7 @@ store = {}
 response = {}
 while True:
     while datetime.datetime.today().hour < 23 and  datetime.datetime.today().hour > 6 or True:
+        time.sleep(5)
         if time.time() - weather_poll > 200:
             weather_poll = time.time()
             response, main, description, feels_like, temp, clouds,wind_speed, repeat, dt = weatherRequest(response)
