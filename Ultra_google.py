@@ -37,10 +37,8 @@ def initGoogleSheet(sheetname,sheet):
         entries, wks = initGoogleSheet(sheetname,sheet + 1)
     return entries, wks
 def updateSheet(entries,worksheet,data):
-    try:
-        print('updatingSheet')
-        worksheet.append_row(data)
-    except 
+    print('updatingSheet')
+    worksheet.append_row(data)
     entries += 1
     return entries
 def unix_time(dt):
