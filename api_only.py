@@ -33,6 +33,7 @@ def timeConverter(timestamp,timeToStation):
 def weatherRequest(response):
     repeat = False
     new_response = requests.get("http://api.openweathermap.org/data/2.5/weather?lat=51.474520&lon=-0.13234&APPID=6be8e1e50dafc734a74f13e0360e68df")
+    print('weatherRequested')
     if response != {}:
         if response.json()['dt'] == new_response.json()['dt']:
             repeat = True  
@@ -47,6 +48,7 @@ def weatherRequest(response):
 def trafficRequest(store):
     responseTo = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N2/Arrivals").json()
     responseFrom = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N1/Arrivals").json()
+    print("trafficRequested")
     for i in range(len(responseTo)):
         responseItem = responseTo[i]
         if responseItem['timeToStation'] < 200:
@@ -66,7 +68,7 @@ def trafficRequest(store):
             timestamp, ts = timeConverter(timestamp,timeToStation)
             store[responseItem['id']] = [responseItem['lineId'], timestamp, ts,'from']
     return store
-bus_entries, bus_gs = initGoogleSheet('Buses',0)
+bus_entries, bus_gs = initGoogleSheet('Buses2',0)
 weather_entries, weather_gs = initGoogleSheet('Weather',0)
 traffic_poll = 0
 weather_poll = 0
@@ -76,11 +78,11 @@ while True:
     while datetime.datetime.today().hour < 23 and  datetime.datetime.today().hour > 6 or True:
         if time.time() - weather_poll > 200:
             weather_poll = time.time()
-            #response, main, description, feels_like, temp, clouds,wind_speed, repeat, dt = weatherRequest(response)
-            #if repeat == False:
-            #    if weather_entries > 1000:
-            #       weather_entries, weather_gs = initGoogleSheet('Weather',0)
-            #    weather_entries = updateSheet(weather_entries,weather_gs,[main, description, feels_like, temp, clouds,wind_speed,dt]) 
+            response, main, description, feels_like, temp, clouds,wind_speed, repeat, dt = weatherRequest(response)
+            if repeat == False:
+                if weather_entries > 1000:
+                   weather_entries, weather_gs = initGoogleSheet('Weather',0)
+                weather_entries = updateSheet(weather_entries,weather_gs,[main, description, feels_like, temp, clouds,wind_speed,dt]) 
         
         if time.time() - traffic_poll > 40:
             store = trafficRequest(store)
@@ -91,7 +93,7 @@ while True:
             if time.time() - store[i][2]  > 120:
                 current_bus = [i,store[i][0],store[i][1],store[i][2],store[i][3]]
                 if bus_entries > 1000:
-                    bus_entries, bus_gs = initGoogleSheet('Buses',0)
+                    bus_entries, bus_gs = initGoogleSheet('Buses2',0)
                 bus_entries = updateSheet(bus_entries,bus_gs,current_bus)
                 todelete.append(i)
         for i in todelete:
