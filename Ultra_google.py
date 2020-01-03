@@ -69,12 +69,17 @@ def pulse(delay):
     gpio.output(trig,True)
     time.sleep(0.00001)
     gpio.output(trig,False)
-    
+    now = time.time()
     while gpio.input(echo) == 0:
         pulse_start = time.time()
-
+        if time.time() - now > 60:
+            pulse_start = 0
+            break
     while gpio.input(echo) == 1:
         pulse_end = time.time()
+        if time.time() - now > 60:
+            pulse_end = 0
+            break
     
     if pulse_start == pulse_end:
         time.sleep(60)
