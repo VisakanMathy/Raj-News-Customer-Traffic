@@ -37,17 +37,35 @@ def weatherRequest(response):
     if response != {}:
         if response.json()['dt'] == new_response.json()['dt']:
             repeat = True  
-    main = new_response.json()['weather'][0]['main']
-    description = new_response.json()['weather'][0]['description']
-    feels_like = new_response.json()['main']['feels_like']
-    temp = new_response.json()['main']['temp']
-    clouds = new_response.json()['clouds']['all']
-    wind_speed = new_response.json()['wind']['speed']
-    dt = new_response.json()['dt']
-    return new_response, main, description, feels_like, temp, clouds,wind_speed, repeat, dt
+    if new_response.status_code == 200:
+        main = new_response.json()['weather'][0]['main']
+        description = new_response.json()['weather'][0]['description']
+        feels_like = new_response.json()['main']['feels_like']
+        temp = new_response.json()['main']['temp']
+        clouds = new_response.json()['clouds']['all']
+        wind_speed = new_response.json()['wind']['speed']
+        dt = new_response.json()['dt']
+        return new_response, main, description, feels_like, temp, clouds,wind_speed, repeat, dt
+    else:
+        main = response.json()['weather'][0]['main']
+        description = response.json()['weather'][0]['description']
+        feels_like = response.json()['main']['feels_like']
+        temp = response.json()['main']['temp']
+        clouds = response.json()['clouds']['all']
+        wind_speed = response.json()['wind']['speed']
+        dt = response.json()['dt']
+        return response, main, description, feels_like, temp, clouds,wind_speed, repeat, dt
 def trafficRequest(store):
-    responseTo = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N2/Arrivals").json()
-    responseFrom = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N1/Arrivals").json()
+    responseTo = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N2/Arrivals")
+    if responseTo.status_code == 200:
+        responseTo = responseTo.json()
+    else:
+        return store
+    responseFrom = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N1/Arrivals")
+    if responseFrom.status_code == 200:
+        responseFrom = responseFrom.json()
+    else:
+        return store
     print("trafficRequested")
     for i in range(len(responseTo)):
         responseItem = responseTo[i]

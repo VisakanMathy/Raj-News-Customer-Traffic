@@ -90,8 +90,16 @@ def pulse(delay):
     return distance
 
 def trafficRequest(store):
-    responseTo = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N2/Arrivals").json()
-    responseFrom = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N1/Arrivals").json()
+    responseTo = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N2/Arrivals")
+    if responseTo.status_code == 200:
+        responseTo = responseTo.json()
+    else:
+        return store
+    responseFrom = requests.get("https://api.tfl.gov.uk/StopPoint/490008978N1/Arrivals")
+    if responseFrom.status_code == 200:
+        responseFrom = responseFrom.json()
+    else:
+        return store
     for i in range(len(responseTo)):
         responseItem = responseTo[i]
         if responseItem['timeToStation'] < 200:
