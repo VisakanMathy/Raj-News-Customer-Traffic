@@ -33,8 +33,6 @@ def initGoogleSheet(sheetname,sheet):
     gc = gspread.authorize(credentials)
     wks = gc.open(sheetname).get_worksheet(sheet)
     entries = len(wks.col_values(1)) + 1
-    if entries > 1000:
-        entries, wks = initGoogleSheet(sheetname,sheet + 1)
     print('initiate sheet')
     return entries, wks
 def updateSheet(entries,worksheet,data):
