@@ -101,7 +101,7 @@ while True:
                 if weather_entries > 1000:
                    weather_entries, weather_gs = initGoogleSheet('Weather',0)
                 weather_entries = updateSheet(weather_entries,weather_gs,[main, description, feels_like, temp, clouds,wind_speed,dt]) 
-                urllib.request.urlopen("https://api.thingspeak.com/update?api_key=M47T7FFSVW26V7CR&field1=0"+str(temp))
+                urllib.request.urlopen("https://api.thingspeak.com/update?api_key=M47T7FFSVW26V7CR&field1=0"+str(temp-273))
                 time.sleep(20)
         if time.time() - traffic_poll > 40:
             store = trafficRequest(store)
