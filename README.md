@@ -6,6 +6,7 @@ The store specialises in providing quality customer service and giving the custo
 
 Raj New's is now looking to further understand the workings of the customers from a technological point of view and more specifically how the outside world affects them
 
+The Project
 - Coursework 1 - [main.py](./main.py) and [secondary.py](./secondary.py)
 - Coursework 2 - [Dataclean.ipynb](./Dataclean.ipynb)
 
