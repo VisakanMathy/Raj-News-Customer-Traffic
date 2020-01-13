@@ -5,6 +5,8 @@ import datetime
 import csv
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import urllib.request
+from urllib.request import urlopen
 
 def initGoogleSheet(sheetname,sheet):
     scope = ['https://spreadsheets.google.com/feeds',
@@ -99,7 +101,8 @@ while True:
                 if weather_entries > 1000:
                    weather_entries, weather_gs = initGoogleSheet('Weather',0)
                 weather_entries = updateSheet(weather_entries,weather_gs,[main, description, feels_like, temp, clouds,wind_speed,dt]) 
-        
+                urllib.request.urlopen("https://api.thingspeak.com/update?api_key=M47T7FFSVW26V7CR&field1=0"+str(temp))
+                time.sleep(20)
         if time.time() - traffic_poll > 40:
             store = trafficRequest(store)
             traffic_poll = time.time()

@@ -6,6 +6,8 @@ import datetime
 import csv
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import urllib.request
+from urllib.request import urlopen
 
 gpio.setmode(gpio.BCM)
 
@@ -176,6 +178,8 @@ try:
                 with open('data.csv','a',newline='') as data_file:
                     data_writer = csv.writer(data_file, delimiter = ',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                     data_writer.writerow(current_data)
+                urllib.request.urlopen("https://api.thingspeak.com/update?api_key=M47T7FFSVW26V7CR&field1=1"+str(temp))
+                time.sleep(20)
 finally:
     if buses_file != None:
         buses_file.close()
